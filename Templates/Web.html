@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFL Team Search</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>NFL Team Search</h1>
+    </header>
+    <main>
+        <form id="searchForm">
+            <input type="text" id="teamName" placeholder="Enter team name" required>
+            <button type="submit">Search</button>
+        </form>
+        <div id="results"></div>
+    </main>
+    <footer>
+        <p>&copy; 2024 NFL Team Search</p>
+    </footer>
+    <script>
+        document.getElementById('searchForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const teamName = document.getElementById('teamName').value;
+            const response = await fetch(`/search_teams?name=${teamName}`);
+            const data = await response.json();
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '';
+            if (data.error) {
+                resultsDiv.innerHTML = `<p>${data.error}</p>`;
+            } else {
+                const ul = document.createElement('ul');
+                data.forEach(team => {
+                    const li = document.createElement('li');
+                    li.textContent = team.name;
+                    ul.appendChild(li);
+                });
+                resultsDiv.appendChild(ul);
+            }
+        });
+    </script>
+</body>
+</html>
